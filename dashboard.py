@@ -65,9 +65,9 @@ with tab2:
                      x_label='Job Satisfaction', y_label='Number of Attrition Employees', sort=False)
     with col2:
         st.bar_chart(df[df['attrition']=='Left'].groupby('remote_work')['attrition'].count().sort_values(ascending=False), 
-                     x_label='Remote Work', y_label='N. Attrition', sort=False, horizontal=True)
+                     y_label='Remote Work', x_label='N. Attrition', sort=False, horizontal=True)
         st.bar_chart(df[df['remote_work']=='No'].groupby('attrition')['distance_from_home'].mean().sort_values(ascending=False), 
-                     x_label='Average distance from home for onsite employees', y_label='N. Attrition', sort=False, horizontal=True)
+                     y_label='Average distance from home for onsite employees', x_label='N. Attrition', sort=False, horizontal=True)
     with col3:
         st.bar_chart(df[df['attrition']=='Left'].groupby('job_satisfaction')['attrition'].count().sort_values(ascending=False), 
                      x_label='Job Satisfaction', y_label='Number of Attrition', sort=False)
