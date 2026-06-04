@@ -33,8 +33,8 @@ with tab1:
     col1, col2, col3 = st.columns(3)
     with col1:
         st.space()
-        st.bar_chart(df.groupby('attrition')['monthly_income'].mean(), x_label='Monthly Salary', y_label='Attrition', horizontal=True)
-        st.bar_chart(df.groupby('attrition')['number_of_dependents'].mean(), x_label='Number of Dependents', y_label='Attrition', horizontal=True)
+        st.bar_chart(df.groupby('attrition')['monthly_income'].mean(), y_label='Monthly Salary', x_label='Attrition', horizontal=True)
+        st.bar_chart(df.groupby('attrition')['number_of_dependents'].mean(), y_label='Number of Dependents', x_label='Attrition', horizontal=True)
         
     with col2:
         st.bar_chart(df[df['attrition']=='Left'].groupby('job_role')['attrition'].count().sort_values(ascending=False), 
