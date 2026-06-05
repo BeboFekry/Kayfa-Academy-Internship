@@ -24,8 +24,6 @@ with st.sidebar:
     remote = st.pills("Workplace", ['Onsite', 'Remote'], selection_mode='multi', default=['Onsite','Remote'])
     remote = ['Yes' if i=='Remote' else 'No' for i in remote]
     st.divider()
-    if st.button("Apply", type='primary'):
-        pass
 
 col1, col2, col3, col4, col5 = st.columns(5, vertical_alignment='center', border=True)
 with col1:
