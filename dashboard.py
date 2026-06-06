@@ -469,28 +469,35 @@ with tab2:
     col1, col2 = st.columns([1,1], vertical_alignment='center')
     with col1:
         with st.container():
-            d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)][df['attrition']=='Left'].groupby('work-life_balance')['attrition'].count().sort_values(ascending=False).reset_index(name='attrition_number')
+            # d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)][df['attrition']=='Left'].groupby('work-life_balance')['attrition'].count().sort_values(ascending=False).reset_index(name='attrition_number')
 
-            d = d.sort_values(by='work-life_balance', key=lambda x:x.map({'Poor':1,'Fair':2,'Good':3,'Excellent':4}))
+            d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(is_left=(df['attrition']=='Left').astype(int))
+                .groupby('company_reputation')['is_left']
+                .mean()
+                .reset_index(name='attrition_rate')
+                )
+            d['attrition_rate'] = d['attrition_rate']*100
 
-            total = d['attrition_number'].sum()
-            d['Percent'] = (d['attrition_number'] / total) * 100
+            d = d.sort_values(by='company_reputation', key=lambda x:x.map({'Poor':1,'Fair':2,'Good':3,'Excellent':4}))
 
-            d['Percent'] = d.apply(lambda row: f"{row['attrition_number']}   ({row['Percent']:.1f}%)", axis=1)
+            # d['percent'] = str(d['attrition_rate']) + ' %'
+
+            d['Percent'] = d.apply(lambda x: f"{round(x['attrition_rate'], 2)} %", axis=1)
 
             fig = px.bar(
-                d, 
-                x='work-life_balance',
-                y='attrition_number',
-                title='Ratio of job level and attrition number',
-                labels={'work-life_balance':'Work Life Balance', 'attrition_number':'Attrition Number'},
-                color='work-life_balance',
-                text='Percent'
+                d,
+                x='company_reputation',
+                y='attrition_rate',
+                title='Attrition rate according to company reputation',
+                labels = {'company_reputation':"Company Reputation",'attrition_rate':'Attrition Rate'},
+                text='Percent',
+                color='company_reputation',
+                width=1000
             )
             st.plotly_chart(fig)
     with col2:
         st.container()
-        st.info(r"Employees of Fair to Good work life balance are more exposed to left their jobs")
+        st.info(r"Employees of Poor and Fair work life balance are more exposed to left their jobs")
     st.divider()
     
 
