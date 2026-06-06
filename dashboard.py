@@ -28,9 +28,6 @@ with st.sidebar:
     remote = st.pills("Workplace", ['Onsite', 'Remote'], selection_mode='multi', default=['Onsite','Remote'])
     remote = ['Yes' if i=='Remote' else 'No' for i in remote]
     st.divider()
-    # if st.button("Reset values", type='primary'):
-    #     age_range = (18,59); company_years=(1,51); company_size=['Small', 'Medium', 'Large']; gender = ['Male', 'Female']; remote=['Yes','No']
-
 
 # Metrics: albayanat ally fo2
 col1, col2, col3, col4, col5 = st.columns(5, vertical_alignment='center', border=True)
@@ -61,15 +58,6 @@ with tab1:
     col1, col2 = st.columns(2, vertical_alignment='center', border=True)
 # job level, salary
     with col1:
-        # d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['company_size'].isin(company_size)][df['gender'].isin(gender)].groupby('attrition')['monthly_income'].mean().reset_index(name='average_income')
-
-        # fig = px.pie(d,
-        #             names='attrition',
-        #             values='average_income',
-        #             title='Salaries Ration beteen stayed and left emplyees',
-        #             hole=0.3,
-        #             )
-        # fig.update_traces(textinfo='percent+value')
         d = df[['monthly_income', 'job_level', 'attrition']].groupby(['job_level','attrition'])['monthly_income'].mean().reset_index(name='average salary')
 
         fig = px.bar(
@@ -85,14 +73,6 @@ with tab1:
         st.plotly_chart(fig)
 # salary
     with col2:
-        # d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['company_size'].isin(company_size)][df['gender'].isin(gender)].groupby('attrition')['number_of_dependents'].mean().reset_index(name='number_of_dependents')
-        # fig = px.pie(d,
-        #             names='attrition',
-        #             values='number_of_dependents',
-        #             title='Average Number of Dependents Ration beteen stayed and left emplyees',
-        #             hole=0.3,
-        #             )
-        # fig.update_traces(textinfo='percent+value')
         q0 = df['monthly_income'].min()
         q1 = int(df['monthly_income'].quantile(0.25))
         q2 = int(df['monthly_income'].quantile(0.5))
@@ -211,8 +191,6 @@ with tab1:
     col1, col2 = st.columns([1,1], vertical_alignment='center')
     with col1:
         with st.container(border=True):
-            # st.space('xsmall')
-
             d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(is_left=(df['attrition']=='Left').astype(int))
                 .groupby('number_of_promotions')['is_left']
                 .mean()
@@ -246,7 +224,6 @@ with tab1:
                 labels={'number_of_promotions':'Number of Promotions', 'experience':'Average Years at Company'}
             )
             st.plotly_chart(fig)
-            # st.space('xsmall')
 # innovation & leadership opp.
     with col2:
         with st.container(border=True):
@@ -320,9 +297,6 @@ with tab1:
             )
             st.plotly_chart(fig)
     with col2:
-        # with st.container():
-        #     pass
-
         st.info("There is an inverse relation between the employee recognition and the attrition rate:")
         st.success("**Suggest:** Making weekly or even monthly meeting share there knowledge and thouts, to make all employees feels that they are recognised.")
     st.divider()
@@ -395,7 +369,6 @@ with tab1:
     st.divider()
     # ____________________________________________________________________________
 
-    
 
 # =======================================================================================================================================================
 # asbab al mowazaf
@@ -432,8 +405,6 @@ with tab2:
 # performance
     with col2:
         with st.container(border=True):
-            # d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)][df['attrition']=='Left'].groupby('performance_rating')['attrition'].count().sort_values(ascending=False).reset_index(name='attrition_number')
-
             d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(is_left=(df['attrition']=='Left').astype(int))
                 .groupby('performance_rating')['is_left']
                 .mean()
@@ -521,7 +492,6 @@ with tab2:
     col1, col2 = st.columns([1,1], vertical_alignment='center')
     with col1:
         with st.container(border=True):
-            # d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)][df['attrition']=='Left'].groupby('remote_work')['attrition'].count().sort_values(ascending=False).reset_index(name='attrition_number')
             d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(is_left=(df['attrition']=='Left').astype(int))
                 .groupby('remote_work')['is_left']
                 .mean()
@@ -529,8 +499,6 @@ with tab2:
                 )
             d['remote_work'] = d['remote_work'].map(lambda x: 'Remote' if x=='Yes' else 'Onsite')
             d['attrition_rate'] = d['attrition_rate']*100
-
-            # d = d.sort_values(by='remote_work', key=lambda x:x.map({'Poor':1,'Fair':2,'Good':3,'Excellent':4}))
 
             d['Percent'] = d.apply(lambda x: f"{round(x['attrition_rate'], 2)} %", axis=1)
 
@@ -571,8 +539,6 @@ with tab2:
     col1, col2 = st.columns([1,1], vertical_alignment='center')
     with col1:
         with st.container(border=True):
-            # d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)][df['attrition']=='Left'].groupby('work-life_balance')['attrition'].count().sort_values(ascending=False).reset_index(name='attrition_number')
-
             d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)][df['attrition']=='Left'].groupby('age')['attrition'].count().reset_index(name='attrition')
 
             d = (d.map(lambda x: '18 - 29' if x>=18 and x<=29 else x)
@@ -603,10 +569,6 @@ with tab2:
     col1, col2 = st.columns([1,1], vertical_alignment='center')
     with col1:
         with st.container(border=True):
-            # d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)][df['attrition']=='Left'].groupby('work-life_balance')['attrition'].count().sort_values(ascending=False).reset_index(name='attrition_number')
-
-            # d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)][df['attrition']=='Left'].groupby('age')['attrition'].count().reset_index(name='attrition')
-
             d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(is_left=(df['attrition']=='Left').astype(int))
                 .groupby('marital_status')['is_left']
                 .mean()
@@ -673,8 +635,6 @@ with tab2:
     col1, col2 = st.columns([1,1], vertical_alignment='center')
     with col1:
         with st.container(border=True):
-            # d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)][df['attrition']=='Left'].groupby('work-life_balance')['attrition'].count().sort_values(ascending=False).reset_index(name='attrition_number')
-
             d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(is_left=(df['attrition']=='Left').astype(int))
                 .groupby('company_reputation')['is_left']
                 .mean()
@@ -683,8 +643,6 @@ with tab2:
             d['attrition_rate'] = d['attrition_rate']*100
 
             d = d.sort_values(by='company_reputation', key=lambda x:x.map({'Poor':1,'Fair':2,'Good':3,'Excellent':4}))
-
-            # d['percent'] = str(d['attrition_rate']) + ' %'
 
             d['Percent'] = d.apply(lambda x: f"{round(x['attrition_rate'], 2)} %", axis=1)
 
@@ -704,43 +662,6 @@ with tab2:
         st.info(r"Employees of Poor and Fair work life balance are more exposed to left their jobs")
     st.divider()
     # _______________________________________________________________________________________
-
-    # q = "Are employees who work overtime more likely to leave, and by how much versus those who don't?"
-    # st.subheader(q)
-    # col1, col2 = st.columns([1,1], vertical_alignment='center')
-    # with col1:
-    #     with st.container(border=True):
-
-    #         d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(work_overtime=(df['attrition']=='Left').astype(int))
-    #         .groupby('overtime')['work_overtime']
-    #         .mean()
-    #         .reset_index(name='attrition_rate'))
-
-    #         d['attrition_rate'] = round(d['attrition_rate'] * 100, 2)
-
-    #         d['overtime'] = d['overtime'].str.replace('No','No overtime').replace('Yes', 'Overtime work')
-
-
-    #         d['Percent'] = d.apply(lambda x: f"{round(x['attrition_rate'], 2)} %", axis=1)
-
-
-    #         fig = px.bar(
-    #             d,
-    #             x='overtime',
-    #             y='attrition_rate',
-    #             title='Ration of Overtime work for attrition',
-    #             text='Percent',
-    #             color='overtime',
-    #             labels={'overtime':'Overtime', 'attrition_rate':'Attrition Rate %'}
-    #         )
-    #         st.plotly_chart(fig)
-    # with col2:
-    #     st.container()
-    #     st.info(r"Employees of **overtime** work are more exposed to left their jobs with **6%**")
-    # st.divider()
-    # # _______________________________________________________________________________________
-
-
 
 total_attrition_rate = round((df[df['attrition']=='Left'].value_counts().count() / df.value_counts().count()) * 100)
 
