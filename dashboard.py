@@ -6,14 +6,15 @@ st.set_page_config(layout='wide', page_icon='icon.png', page_title='Kayfa Task 1
 
 df = pd.read_csv('data.csv')
 
-st.logo("kayfaio_logo2.jpg")
+st.logo("Picsart_26-06-07_12-14-08-409.png", size='large')
 
-col1, col2 = st.columns([2,0.5])
+col1, col2 = st.columns([2,1], vertical_alignment='center')
 with col1:
     st.header("HR Attrition Dashboard", divider='blue', width='content')
+    st.subheader("Task 1 - AI & Data Anlytics Internship")
 with col2:
     st.image("logo_full_black.svg")
-
+st.divider()
 # applying filters conditions
 # [df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)]
 
@@ -143,7 +144,7 @@ with tab1:
             )
             st.plotly_chart(fig)
             
-    st.info("Most domain is Technology these beacause there is a large number of employees works in the tech")
+    st.info(r"Most domainwith attrition percentage is Education as 48.8 % from its employees left their jobs, but the concern is from the tech roles with 47% but have the largest number of employees attrition and the technical field is the most difficult to find when it comes to hiring a replacement for someone who has left their job.")
     st.divider()
     # _____________________________________________________________________---
 
@@ -389,32 +390,58 @@ with tab1:
 # asbab al mowazaf
 with tab2:
     st.subheader("According to :blue[Employee]")
-# job satisfaction
-    q = "Does the job satisfaction, performance and work under pressure affect the attrition rate?"
+# job satisfaction and work life balance
+    q = "Does work load and stress, job satisfaction, and performance affect the attrition rate?"
     st.subheader(q)
+    d = (df.assign(is_left=(df['attrition']=='Left').astype(int))
+    .groupby(['job_satisfaction','work-life_balance'])['is_left']
+    .mean()
+    .reset_index(name='attrition_rate')
+    )
+
+    d = d.sort_values(by='work-life_balance', key=lambda x:x.map({'Poor':1,'Fair':2,'Good':3,'Excellent':4}))
+
+    d['attrition_rate'] = d['attrition_rate']*100
+
+    d['Percent'] = d.apply(lambda x: f"{round(x['attrition_rate'], 2)} %", axis=1)
+
+    fig = px.bar(
+        d,
+        x='work-life_balance',
+        y='attrition_rate',
+        title='Relation of Work Life Balance merged with Job Satisfaction and Attrition Rate',
+        text='Percent',
+        color='job_satisfaction',
+        barmode='group',
+        labels={'work-life_balance':'Work Life Balance', 'attrition_rate':'Attrition Rate %', 'job_satisfaction':'Job Satisfaction'}
+        )
+    st.plotly_chart(fig)
     col1, col2 = st.columns(2, vertical_alignment='center')
+# overtime
     with col1:
         with st.container(border=True):
-            d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(is_left=(df['attrition']=='Left').astype(int))
-                .groupby('job_satisfaction')['is_left']
-                .mean()
-                .reset_index(name='attrition_rate')
-                )
 
-            d = d.sort_values(by='job_satisfaction', key=lambda x:x.map({'Low':1,'Medium':2,'High':3,'Very High':4}))
+            d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(work_overtime=(df['attrition']=='Left').astype(int))
+            .groupby('overtime')['work_overtime']
+            .mean()
+            .reset_index(name='attrition_rate'))
 
-            d['attrition_rate'] = d['attrition_rate']*100
+            d['attrition_rate'] = round(d['attrition_rate'] * 100, 2)
+
+            d['overtime'] = d['overtime'].str.replace('No','No overtime').replace('Yes', 'Overtime work')
+
 
             d['Percent'] = d.apply(lambda x: f"{round(x['attrition_rate'], 2)} %", axis=1)
 
+
             fig = px.bar(
                 d,
-                x='job_satisfaction',
+                x='overtime',
                 y='attrition_rate',
-                title='Attrition rate according to Job Satisfaction',
+                title='Ration of Overtime work for attrition',
                 text='Percent',
-                color='job_satisfaction',
-                labels={'job_satisfaction':'Job Satisfaction', 'attrition_rate':'Attrition Rate %'}
+                color='overtime',
+                labels={'overtime':'Overtime', 'attrition_rate':'Attrition Rate %'}
             )
             st.plotly_chart(fig)
 # performance
@@ -443,61 +470,9 @@ with tab2:
             )
             st.plotly_chart(fig)
     col1, col2 = st.columns(2, vertical_alignment='center')
-# work life balance
-    with col1:
-        with st.container(border=True):
-            d = (df.assign(is_left=(df['attrition']=='Left').astype(int))
-                .groupby('work-life_balance')['is_left']
-                .mean()
-                .reset_index(name='attrition_rate')
-                )
-
-            d = d.sort_values(by='work-life_balance', key=lambda x:x.map({'Poor':1,'Fair':2,'Good':3,'Excellent':4}))
-
-            d['attrition_rate'] = d['attrition_rate']*100
-
-            d['Percent'] = d.apply(lambda x: f"{round(x['attrition_rate'], 2)} %", axis=1)
-
-            fig = px.bar(
-                d,
-                x='work-life_balance',
-                y='attrition_rate',
-                title='Relation of Work Life Balance and Attrition Rate',
-                text='Percent',
-                color='work-life_balance',
-                labels={'work-life_balance':'Work Life Balance', 'attrition_rate':'Attrition Rate %'},
-                width=1000
-            )
-            st.plotly_chart(fig)
-# overtime
-    with col2:
-        with st.container(border=True):
-
-            d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(work_overtime=(df['attrition']=='Left').astype(int))
-            .groupby('overtime')['work_overtime']
-            .mean()
-            .reset_index(name='attrition_rate'))
-
-            d['attrition_rate'] = round(d['attrition_rate'] * 100, 2)
-
-            d['overtime'] = d['overtime'].str.replace('No','No overtime').replace('Yes', 'Overtime work')
-
-
-            d['Percent'] = d.apply(lambda x: f"{round(x['attrition_rate'], 2)} %", axis=1)
-
-
-            fig = px.bar(
-                d,
-                x='overtime',
-                y='attrition_rate',
-                title='Ration of Overtime work for attrition',
-                text='Percent',
-                color='overtime',
-                labels={'overtime':'Overtime', 'attrition_rate':'Attrition Rate %'}
-            )
-            st.plotly_chart(fig)
-    st.info(r"Employees of **overtime** work are more exposed to left their jobs with **6%**, with more lower performance and lower job satisfaction are more exposed to attrition, and more overtime")
-    st.success("**Suggest:** to enhance work time to enhance work life balance, decrease overtime and make it optional.")
+    st.info(r"Employees of **overtime** work are more exposed to left their jobs with **6%**, most of employees that have poor work life balance have low job satisfaction, which can affect in performance to be lower, trying to decrease work load and work time or increasing remote work ration can solve these problem.")
+    # st.success("**Suggest:** to enhance work time to enhance work life balance, decrease overtime and make it optional.")
+    st.success(r"Decreasing work load and stress, by making worktime shift maximum 8 hours with 1 hour break, adding remote work for the employees with job that allow this option, and decrease overtime and make it optional, to enhance work life time from poor to good, these excpected to decrease attrition rate by ~40%")
 
     st.divider()
     # ____________________________________________________________________________
@@ -543,49 +518,21 @@ with tab2:
                 color='attrition',
             )
             st.plotly_chart(fig)
-    st.info(r"Employees that are works onsite are more exposed to left their companies than remote work by **double**.")
+    st.info(r"Employees that are works onsite are more exposed to left their companies than remote work by **double**. As 52.8 % from employees that are works onsite are left their jobs while only 24.7 % from remote work emlyees are left their jobs.")
     st.success("**Sugest:** to increase the remote work and hybrid work for the employees with job that allow this option.")
     st.divider()
     # ____________________________________________________________________________
 # age range
-    q = "Does the age range can affect the employees attrition rate?"
-    st.subheader(q)
-    col1, col2 = st.columns([1,1], vertical_alignment='center')
-    with col1:
-        with st.container(border=True):
-
-            d = df[['age','attrition']][df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)]
-
-            d['age'] = (d['age'].map(lambda x: '18 - 29' if x>=18 and x<=29 else x)
-            .map(lambda x: '30 - 39' if type(x)==int and x>=30 and x<=39 else x)
-            .map(lambda x: '40 - 49' if type(x)==int and x>=40 and x<=49 else x)
-            .map(lambda x: '50 - 59' if type(x)==int and x>=50 and x<=59 else x))
-
-            d = (d.assign(is_left=(d['attrition']=='Left').astype(int))
-                .groupby('age')['is_left']
-                .mean()
-                .reset_index(name='attrition_rate')
-                )
-
-            d['attrition_rate'] = d['attrition_rate'] * 100
-
-            fig = px.bar(
-                d,
-                x='age',
-                y='attrition_rate',
-                title='Age ranges and number of attrition',
-                text_auto='0.1f',
-                color='age',
-                labels={'age':'Age Range','attrition_rate':'Attrition Rate %'}
-            )
-            st.plotly_chart(fig)
-    with col2:
-        st.container()
-        st.info(r"Employees of age range between 18-29 are more exposed to left their jobs by **52 %** chance")
-    st.divider()
+    # q = "Does the age range can affect the employees attrition rate?"
+    # st.subheader(q)
+    
+    # with col2:
+        # st.container()
+        # st.info(r"Employees of age range between 18-29 are more exposed to left their jobs by **52 %** chance")
+    # st.divider()
     # _____________________________________________________________________________
 # martial status
-    q = "Does the martial status can affect the employees attrition rate?"
+    q = "Does the personal life as martial status, age, and number of dependents can affect the employees attrition rate?"
     st.subheader(q)
     col1, col2 = st.columns([1,1], vertical_alignment='center')
     with col1:
@@ -647,7 +594,38 @@ with tab2:
             )
             
             st.plotly_chart(fig)
-    st.info(r"Employees that are **not married** have more chance with **74%** to left their jobs than married employees, and as they have less ages from 18 to 29 and less number of dependents from 0 to 3 are more exposed to leave their jobs.")
+    col1, col2 = st.columns([1,1], vertical_alignment='center')
+    with col1:
+        with st.container(border=True):
+
+            d = df[['age','attrition']][df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)]
+
+            d['age'] = (d['age'].map(lambda x: '18 - 29' if x>=18 and x<=29 else x)
+            .map(lambda x: '30 - 39' if type(x)==int and x>=30 and x<=39 else x)
+            .map(lambda x: '40 - 49' if type(x)==int and x>=40 and x<=49 else x)
+            .map(lambda x: '50 - 59' if type(x)==int and x>=50 and x<=59 else x))
+
+            d = (d.assign(is_left=(d['attrition']=='Left').astype(int))
+                .groupby('age')['is_left']
+                .mean()
+                .reset_index(name='attrition_rate')
+                )
+
+            d['attrition_rate'] = d['attrition_rate'] * 100
+
+            fig = px.bar(
+                d,
+                x='age',
+                y='attrition_rate',
+                title='Age ranges and number of attrition',
+                text_auto='0.1f',
+                color='age',
+                labels={'age':'Age Range','attrition_rate':'Attrition Rate %'}
+            )
+            st.plotly_chart(fig)
+    with col2:
+        st.info(r"""Employees with that are younger, have less dependents and have no relationships can be more daring to left their jobs. \
+        As we see there is 66.7 % of **Single** employees are left their jobs, with age range between **18-29** by **52 %** chance, with less than 4 number of dependents.""")
 
     st.divider()
 
@@ -667,7 +645,17 @@ st.info(f"""The average attrition rate is **{total_attrition_rate} %** \n
 Employees that have poor work life balance, in entry level, with low performance, and they are single have chance to leave their companies by **{risk_attrition_rate} %**, so they have chance more than the average by **{risk_attrition_rate-total_attrition_rate} %**""")
 st.divider()
 
-st.header("Final Suggetions:")
+
+
+st.header("Top 3 Attrition Reasons:")
+st.write("""**1.** Work Load and stress work time, that can affect work life balance, remote work, job satisfaction and performance rating they are excced normael baseline by at least 20 %.
+
+**2.** Distraction of new commers, and the absence of innovation and promotions opportunities and yearly income annual increasing that make most employees left their jobs in the first 5 years.
+
+**3.** Company Reputation, that make employees left their companies by 56 % more than the baseline by 9 %
+""")
+
+st.header("Final Suggetions and ")
 st.write("""**1.** Decreasing work load and stress, by making worktime shift maximum 8 hours with 1 hour break, adding remote work for the employees with job that allow this option, and decrease overtime and make it optional, to enhance work life time from poor to good, these excpected to decrease attrition rate by ~40%.
 
 **2.** Focus on new commers, increase follow-up and guidance from their leaders.
