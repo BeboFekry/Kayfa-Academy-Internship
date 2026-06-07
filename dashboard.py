@@ -6,7 +6,7 @@ st.set_page_config(layout='wide', page_icon='icon.png', page_title='Kayfa Task 1
 
 df = pd.read_csv('data.csv')
 
-st.logo("Picsart_26-06-07_12-14-08-409.png", size='large')
+st.logo("kayfaio_logo2.png", size='large')
 
 col1, col2 = st.columns([2,1], vertical_alignment='center')
 with col1:
