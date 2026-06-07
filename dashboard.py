@@ -286,19 +286,32 @@ with tab1:
         with st.container(border=True):
             d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)][df['attrition']=='Left'].groupby('employee_recognition')['attrition'].count().sort_values(ascending=False).reset_index(name='attrition_number')
 
+            d = (df.assign(is_left=(df['attrition']=='Left').astype(int))
+                .groupby('employee_recognition')['is_left']
+                .mean()
+                .reset_index(name='attrition_rate')
+                )
+
+            d['attrition_rate'] = d['attrition_rate'] * 100
+
+            d = d.sort_values(by='employee_recognition', key=lambda x:x.map({'Low':1,'Medium':2,'High':3,'Very High':4}))
+            
             fig = px.bar(
                 d, 
                 x='employee_recognition',
-                y='attrition_number',
-                title='Ratio of employee recognition and attrition number',
-                labels={'employee_recognition':'Employee Recognition', 'attrition_number':'Atrrition Rate'},
+                y='attrition_rate',
+                title='Ratio of employee recognition and attrition rate',
+                labels={'employee_recognition': 'Employee Recognition', 'attrition_rate': 'Attritions Percentage %'},
                 text_auto='.1f',
                 color='employee_recognition'
             )
             st.plotly_chart(fig)
     with col2:
-        st.info("There is an inverse relation between the employee recognition and the attrition rate:")
-        st.success("**Suggest:** Making weekly or even monthly meeting share there knowledge and thouts, to make all employees feels that they are recognised.")
+        # with st.container():
+        #     pass
+
+        st.info("There is an inverse relation between the employee recognition and the attrition rate with small difference")
+        st.success("**Suggest:** Making weekly or even monthly meeting share there knowledge and thougts, to make all employees feels that they are very recognised, will decrease attrition rate by ~2%")
     st.divider()
     # ____________________________________________________________________________
 
@@ -366,9 +379,11 @@ with tab1:
     with col2:
         st.container()
         st.info("More poor reputition companies are exposed to attrition rate more than good and excellent companies")
+        st.success("Enhancing company reputation as much as possible from poor to good will decrease attrition rate by 13%")
     st.divider()
     # ____________________________________________________________________________
 
+    
 
 # =======================================================================================================================================================
 # asbab al mowazaf
@@ -507,7 +522,6 @@ with tab2:
                 x='remote_work',
                 y='attrition_rate',
                 title='Attrition rate according to company reputation',
-                # text_auto='0.1f',
                 labels={'remote_work':'Remote Work', 'attrition_rate':'Attrition Rate'},
                 text='Percent',
                 color='remote_work',
@@ -539,28 +553,35 @@ with tab2:
     col1, col2 = st.columns([1,1], vertical_alignment='center')
     with col1:
         with st.container(border=True):
-            d = df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)][df['attrition']=='Left'].groupby('age')['attrition'].count().reset_index(name='attrition')
 
-            d = (d.map(lambda x: '18 - 29' if x>=18 and x<=29 else x)
+            d = df[['age','attrition']][df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)]
+
+            d['age'] = (d['age'].map(lambda x: '18 - 29' if x>=18 and x<=29 else x)
             .map(lambda x: '30 - 39' if type(x)==int and x>=30 and x<=39 else x)
             .map(lambda x: '40 - 49' if type(x)==int and x>=40 and x<=49 else x)
             .map(lambda x: '50 - 59' if type(x)==int and x>=50 and x<=59 else x))
 
-            d = d.groupby('age')['attrition'].sum().reset_index(name='attrition')
+            d = (d.assign(is_left=(d['attrition']=='Left').astype(int))
+                .groupby('age')['is_left']
+                .mean()
+                .reset_index(name='attrition_rate')
+                )
+
+            d['attrition_rate'] = d['attrition_rate'] * 100
 
             fig = px.bar(
                 d,
                 x='age',
-                y='attrition',
+                y='attrition_rate',
                 title='Age ranges and number of attrition',
                 text_auto='0.1f',
-                labels={'age':'Age Range','attrition':'Attrition Number'},
-                color='age'
+                color='age',
+                labels={'age':'Age Range','attrition_rate':'Attrition Rate %'}
             )
             st.plotly_chart(fig)
     with col2:
         st.container()
-        st.info(r"Employees of age range between 18-29 are more exposed to left their jobs")
+        st.info(r"Employees of age range between 18-29 are more exposed to left their jobs by **52 %** chance")
     st.divider()
     # _____________________________________________________________________________
 # martial status
@@ -569,6 +590,7 @@ with tab2:
     col1, col2 = st.columns([1,1], vertical_alignment='center')
     with col1:
         with st.container(border=True):
+
             d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(is_left=(df['attrition']=='Left').astype(int))
                 .groupby('marital_status')['is_left']
                 .mean()
@@ -628,70 +650,29 @@ with tab2:
     st.info(r"Employees that are **not married** have more chance with **74%** to left their jobs than married employees, and as they have less ages from 18 to 29 and less number of dependents from 0 to 3 are more exposed to leave their jobs.")
 
     st.divider()
-    # _____________________________________________________________________________
-
-    q = "What factors can affect on the employees attrition rate?"
-    st.subheader(q)
-    col1, col2 = st.columns([1,1], vertical_alignment='center')
-    with col1:
-        with st.container(border=True):
-            d = (df[df['remote_work'].isin(remote)][(df['years_at_company'] >= company_years[0]) & (df['years_at_company'] <= company_years[1])][(df['age'] >= age_range[0]) & (df['age'] <= age_range[1])][df['gender'].isin(gender)][df['company_size'].isin(company_size)].assign(is_left=(df['attrition']=='Left').astype(int))
-                .groupby('company_reputation')['is_left']
-                .mean()
-                .reset_index(name='attrition_rate')
-                )
-            d['attrition_rate'] = d['attrition_rate']*100
-
-            d = d.sort_values(by='company_reputation', key=lambda x:x.map({'Poor':1,'Fair':2,'Good':3,'Excellent':4}))
-
-            d['Percent'] = d.apply(lambda x: f"{round(x['attrition_rate'], 2)} %", axis=1)
-
-            fig = px.bar(
-                d,
-                x='company_reputation',
-                y='attrition_rate',
-                title='Attrition rate according to company reputation',
-                labels = {'company_reputation':"Company Reputation",'attrition_rate':'Attrition Rate'},
-                text='Percent',
-                color='company_reputation',
-                width=1000
-            )
-            st.plotly_chart(fig)
-    with col2:
-        st.container()
-        st.info(r"Employees of Poor and Fair work life balance are more exposed to left their jobs")
-    st.divider()
-    # _______________________________________________________________________________________
 
 total_attrition_rate = round((df[df['attrition']=='Left'].value_counts().count() / df.value_counts().count()) * 100)
 
-
 d = df[
-    (df['remote_work']=='No') & 
-    (df['employee_recognition']=='Low') & 
-    (df['marital_status']!='Married')&
+    (df['work-life_balance']=='Poor') & 
+    (df['performance_rating']=='Low') & 
+    (df['marital_status']=='Single')&
     (df['job_level']=='Entry')
 ]
 
 risk_attrition_rate = round((d[d['attrition']=='Left'].value_counts().count() / d.value_counts().count()) * 100)
 
 st.metric(label=":blue[Working Employees in Risk to leave their jobs]", value=d[d['attrition']=='Left'].value_counts().count(), border=True, width='content')
-st.info(f"""The average attrition rate is {total_attrition_rate} % \
-            Employees that are worked onsite, with entry level, with low recognition chance, and not married have chance to leave their companies by {risk_attrition_rate} %, so they have chance more than the average by {risk_attrition_rate-total_attrition_rate} %""")
-
+st.info(f"""The average attrition rate is **{total_attrition_rate} %** \n
+Employees that have poor work life balance, in entry level, with low performance, and they are single have chance to leave their companies by **{risk_attrition_rate} %**, so they have chance more than the average by **{risk_attrition_rate-total_attrition_rate} %**""")
 st.divider()
 
 st.header("Final Suggetions:")
-st.write("""**1.** Increase the remote work and hybrid work for the employees with job that allow this option.
+st.write("""**1.** Decreasing work load and stress, by making worktime shift maximum 8 hours with 1 hour break, adding remote work for the employees with job that allow this option, and decrease overtime and make it optional, to enhance work life time from poor to good, these excpected to decrease attrition rate by ~40%.
 
-**2.** Making weekly or even monthly meeting share there knowledge and thouts, to make all employees feels that they are recognised.
+**2.** Focus on new commers, increase follow-up and guidance from their leaders.
 
-**3.** Increase promotions for the deserving employees for entry level after at most 4 to 5 years, and innovation opportunities and evaluation for entry level to enhance their performance.
-
-Additions:
-
-**4.** Focus on new commers, increase follow-up and guidance from their leaders.
-
-**6.** Make a clear slaries system for employees, that is fair and offer opportunities for development and income improvements as they go more experienced.
-
-**7.** To enhance work time to enhance work life balance, decrease overtime and make it optional.""")
+**3.** Increase promotions for the deserving employees for entry level after at most 4 to 5 years, innovation opportunities for entry level to enhance and evaluate their performance and apply clear slaries system that have fair increasing with promotions as they go more experienced.
+         
+**4.** Enhance company reputation as much as possible from poor to good will decrease attrition rate by 13%
+""")
