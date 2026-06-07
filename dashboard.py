@@ -650,12 +650,12 @@ st.divider()
 st.header("Top 3 Attrition Reasons:")
 st.write("""**1.** Work Load and stress work time, that can affect work life balance, remote work, job satisfaction and performance rating they are excced normael baseline by at least 20 %.
 
-**2.** Distraction of new commers, and the absence of innovation and promotions opportunities and yearly income annual increasing that make most employees left their jobs in the first 5 years.
+**2.** Distraction of new commers, and the absence of innovation and promotions opportunities and yearly income annual increasing that make most employees left their jobs in the first 5 years, as the entry level have leave the jobs with by 16 % attrition rate more than average on all levels.
 
 **3.** Company Reputation, that make employees left their companies by 56 % more than the baseline by 9 %
 """)
 
-st.header("Final Suggetions and ")
+st.header("Final Suggetions")
 st.write("""**1.** Decreasing work load and stress, by making worktime shift maximum 8 hours with 1 hour break, adding remote work for the employees with job that allow this option, and decrease overtime and make it optional, to enhance work life time from poor to good, these excpected to decrease attrition rate by ~40%.
 
 **2.** Focus on new commers, increase follow-up and guidance from their leaders.
@@ -664,3 +664,6 @@ st.write("""**1.** Decreasing work load and stress, by making worktime shift max
          
 **4.** Enhance company reputation as much as possible from poor to good will decrease attrition rate by 13%
 """)
+
+st.header("Next quarter of the year plan")
+st.write("Decreasing work load and stress, by making worktime shift maximum 8 hours with 1 hour break, adding remote work for the employees with job that allow this option, and decrease overtime and make it optional, to enhance work life time from poor to good, these excpected to decrease attrition rate by ~40%.")
