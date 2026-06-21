@@ -2,6 +2,7 @@ streamlit
 langchain_community
 langchain_chroma==1.1.0
 langchain_google_genai
+sentence_transformers
 langchain_huggingface==1.2.2
 langchain_core
 langgraph==1.1.10
