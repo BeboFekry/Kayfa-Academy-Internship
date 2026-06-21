@@ -1,16 +1,7 @@
 import streamlit as st
-import base64
-# For the agent
 from langchain_core.tools import tool
 from langgraph.prebuilt import create_react_agent
 from langchain_google_genai import ChatGoogleGenerativeAI
-# from langchain_google_vertexai import ChatVertexAI
-# for data handling
-import pandas as pd
-# for web scrapping
-import requests
-import serpapi
-# for speech recognition
 import speech_recognition as sr
 import pandas as pd
 from langchain_core.tools import tool
@@ -18,7 +9,6 @@ from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.prebuilt import create_react_agent
-import streamlit as st
 import datetime
 import random
 from pymongo import MongoClient
