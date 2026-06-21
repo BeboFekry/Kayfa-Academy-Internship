@@ -42,8 +42,6 @@ if "language" not in st.session_state:
 
 # __________________________________________________________________________________________________________
 
-# st.write(st.session_state.retriever.invoke("what is the best course contains data analysis and machine learning or artificial intelligence"))
-
 password = st.secrets['mongo_db_pass']
 uri = f"mongodb+srv://abdallahfekry95:{password}@cluster0.tihyjgn.mongodb.net/?appName=Cluster0"
 def get_db_connection(uri=uri):
@@ -51,6 +49,7 @@ def get_db_connection(uri=uri):
     db = client["kayfa_academy_db"]
     return db
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
 path = os.path.join(current_dir, r"Ai-Analytics Intern at Kayfa Task3 Data and its Summary","data","json","kayfa_courses.json")
 courses = pd.read_json(path)
 path = os.path.join(current_dir, r"Ai-Analytics Intern at Kayfa Task3 Data and its Summary","data","json","kayfa_roadmaps.json")
