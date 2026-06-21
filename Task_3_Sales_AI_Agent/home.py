@@ -56,8 +56,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
-with open('html.txt','rb') as f:
+current_dir = os.path.dirname(os.path.abspath(__file__))
+path = os.path.join(current_dir, "html.txt")
+with open(path,'rb') as f:
     particles_js = f.read()
 
 
