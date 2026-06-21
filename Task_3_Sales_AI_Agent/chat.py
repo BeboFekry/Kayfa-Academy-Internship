@@ -217,14 +217,17 @@ if st.session_state.chat:
         for c in st.session_state.chat:
             # Show the text messages
             if c['parts'][0].get('text'):
-                st.chat_message('user' if c['role']=="user" else "assistant", avatar='media/user avatar.png' if c['role']=="user" else 'media/bot avatar.png').markdown(c['parts'][0]['text'], text_alignment='right', width='stretch')
+                current_dir = os.path.dirname(os.path.abspath(__file__))
+                user_path = os.path.join(current_dir, "media","user avatar.png")
+                bot_path = os.path.join(current_dir, "media","bot avatar.png")
+                st.chat_message('user' if c['role']=="user" else "assistant", avatar=user_path if c['role']=="user" else bot_path).markdown(c['parts'][0]['text'], text_alignment='right', width='stretch')
             # Show the audio messages
             if c['parts'][0].get('audio'):
                 # Autoplay the last voice note
                 if counter == len(st.session_state.chat)-1:
-                    st.chat_message('user' if c['role']=="user" else "assistant", avatar='media/user avatar.png' if c['role']=="user" else 'media/bot avatar.png').audio(c['parts'][0]['audio'], autoplay=False)
+                    st.chat_message('user' if c['role']=="user" else "assistant", avatar=user_path if c['role']=="user" else bot_path).audio(c['parts'][0]['audio'], autoplay=False)
                 else:
-                    st.chat_message('user' if c['role']=="user" else "assistant", avatar='media/user avatar.png' if c['role']=="user" else 'media/bot avatar.png').audio(c['parts'][0]['audio'])
+                    st.chat_message('user' if c['role']=="user" else "assistant", avatar=user_path if c['role']=="user" else bot_path).audio(c['parts'][0]['audio'])
             counter += 1
         current = st.empty()
         loading = st.empty()
