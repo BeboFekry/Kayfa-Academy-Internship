@@ -73,7 +73,8 @@ with col2:
     st.header("The Smartest AI Sales Assistant\n\n## Ready to Chat!", text_alignment='center')
     st.markdown(':rainbow[Courses recommentdation, database resources, add sales tickets, speech recognition, decision supports]', text_alignment='center')
     mt = st.empty()
-    st.columns([1.47,1,1], vertical_alignment='top')[1].image(r"media\Ai Robot Vector Art.gif")
+    path = os.path.join(current_dir,"media", "Ai Robot Vector Art.gif")
+    st.columns([1.47,1,1], vertical_alignment='top')[1].image(path)
 
     col1, col2, col3, col4 = st.columns([3,1.1,1.1,3])
     with col2:
