@@ -237,7 +237,9 @@ if st.session_state.chat:
             st.success("Your chat stored successfully!")
 else:
     with col2:
-        st.chat_message('ai', avatar='media/bot avatar.png').write("اهلا 👋, انا كيفَبوت أقدر اساعادك ازاي النهاردة؟")
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        bot_path = os.path.join(current_dir, "media","bot avatar.png")
+        st.chat_message('ai', avatar=bot_path).write("اهلا 👋, انا كيفَبوت أقدر اساعادك ازاي النهاردة؟")
         # loading = st.empty()
         current = st.empty()
         loading = st.empty()
