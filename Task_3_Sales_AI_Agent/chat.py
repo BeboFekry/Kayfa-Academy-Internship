@@ -20,13 +20,6 @@ menu_items = {
 "About": about}
 st.set_page_config(page_title="Kayfa Chtbot", initial_sidebar_state='collapsed', layout='wide', menu_items=menu_items)
 
-
-if 'courses' not in st.session_state:
-    path = r"Ai-Analytics Intern at Kayfa Task3 Data and its Summary\data\json\kayfa_courses.json"
-    st.session_state.courses = pd.read_json(path)
-if 'roadmaps' not in st.session_state:
-    path = r"Ai-Analytics Intern at Kayfa Task3 Data and its Summary\data\json\kayfa_roadmaps.json"
-    st.session_state.roadmaps = pd.read_json(path)
 if 'retriever' not in st.session_state:
     st.session_state.embeddings_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     st.session_state.vector_database = Chroma(
@@ -58,9 +51,10 @@ def get_db_connection(uri=uri):
     db = client["kayfa_academy_db"]
     return db
 
-
-courses = pd.read_json(r"Ai-Analytics Intern at Kayfa Task3 Data and its Summary\data\json\kayfa_courses.json")
-roadmaps = pd.read_json(r"Ai-Analytics Intern at Kayfa Task3 Data and its Summary\data\json\kayfa_roadmaps.json")
+path = os.path.join(current_dir, r"Ai-Analytics Intern at Kayfa Task3 Data and its Summary","data","json","kayfa_courses.json")
+courses = pd.read_json(path)
+path = os.path.join(current_dir, r"Ai-Analytics Intern at Kayfa Task3 Data and its Summary","data","json","kayfa_roadmaps.json")
+roadmaps = pd.read_json(path)
 retriever = st.session_state.vector_database.as_retriever(search_type="similarity", search_kwargs={'k': 4})
 
 @tool
