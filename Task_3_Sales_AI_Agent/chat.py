@@ -175,10 +175,14 @@ def add_message(sender,message):
 def chat(text):
     try:
         add_message('human', text)
-        with loading.chat_message("assistant", avatar='media/bot avatar.png'):
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(current_dir, "media","bot avatar.png")
+        with loading.chat_message("assistant", avatar=path):
             col1, col2 = st.columns([1,15], vertical_alignment='center', gap=None)
             with col1:
-                st.image('media/Sparkles Loop Loader ai.gif')
+                current_dir = os.path.dirname(os.path.abspath(__file__))
+                path = os.path.join(current_dir, "media","Sparkles Loop Loader ai.gif")
+                st.image(path)
             with col2:
                 st.markdown("AI Decision...")
             response_state = st.session_state.agent.invoke(st.session_state.messages)
