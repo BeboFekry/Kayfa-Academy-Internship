@@ -251,14 +251,16 @@ if message:
     # if message.files:
     #     pass
     if message.text:
-        current.chat_message('user', avatar='media/user avatar.png').markdown(message.text)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        user_path = os.path.join(current_dir, "media","user avatar.png")
+        current.chat_message('user', avatar=user_path).markdown(message.text)
         response = chat(message.text)
         loading.empty()
         st.session_state.chat.append({"role":"user","parts":[{"text":message.text}]})
         st.session_state.chat.append({"role":"model","parts":[{"text":response}]})
         st.rerun()
     if message.audio:
-        current.chat_message('user', avatar='media/user avatar.png').audio(message.audio, autoplay=False)
+        current.chat_message('user', avatar=user_path).audio(message.audio, autoplay=False)
         with open("user_voice.mp3", "wb") as f:
             f.write(message.audio.read())
         try:
