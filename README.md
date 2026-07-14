@@ -5,3 +5,6 @@ Link: https://kayfa-academy-internship-task-1-hr-attrition-dashboard.streamlit.a
 
 ## Task 2 - Students Performance Analysis & Presentation
 Link: https://kayfa-academy-internship-student-analysis-task-2.streamlit.app/
+
+## Task 3 - AI Sales Agent 
+Link: 
